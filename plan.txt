@@ -1,0 +1,6 @@
+1. Create Terraform file (with rds)
+2. Install Jenkins
+3. Install configure nexus and Sonarqube
+4. Create pipeline
+5. Pull artifact from nexus , build and run image
+6. Preparation to demo
