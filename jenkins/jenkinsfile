@@ -10,7 +10,6 @@ pipeline {
         stage('Build') {
             steps {
             // script here
-            }
             echo 'Done'
             }
         }
@@ -44,6 +43,6 @@ pipeline {
         """)
         }
      }
-
+    }
  }
 }
