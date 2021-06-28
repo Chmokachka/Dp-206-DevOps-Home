@@ -1,32 +1,33 @@
 pipeline {
     agent any
     stages {
-
-        stage('Checkout') {
-            steps {
-                echo 'Checkout..'
+        stage ("Sonar"){
+          agent {
+            docker{
+              image 'maven:3.8.1-adoptopenjdk-11'
+              args '-v /root/.m2:/root/.m2'
             }
-        }
-        stage('Build') {
-            steps {
-            // script here
-            echo 'Done'
+          }
+          stages{
+            stage ("Sonar"){
+              steps{
+                script{
+                  withSonarQureEnv('sonarsever'){
+                    sh 'mvn sonar:sonar'
+                  }
+                }
+              }
             }
+          }
         }
-        stage('Publish') {
-            steps {
-			    // script here
-                echo "Deployed Successfully!"
-            }
-        }
-        }
-        post {
-     always {
-        withCredentials([string(credentialsId: 'telegramToken', variable: 'TOKEN'), string(credentialsId: 'telegramChatId', variable: 'CHAT_ID')]) {
-        sh  ("""
-            curl -s -X POST https://api.telegram.org/bot${TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text='*${env.JOB_NAME}* : POC *Branch*: ${env.GIT_BRANCH} *Build* : ${currentBuild.currentResult}'
-        """)
-        }
-     }
+    }
+    post {
+       always {
+          withCredentials([string(credentialsId: 'telegramToken', variable: 'TOKEN'), string(credentialsId: 'telegramChatId', variable: 'CHAT_ID')]) {
+          sh  ("""
+              curl -s -X POST https://api.telegram.org/bot${TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text='*${env.JOB_NAME}* : POC *Branch*: ${env.GIT_BRANCH} *Build* : ${currentBuild.currentResult}'
+          """)
+          }
+       }
     }
 }
