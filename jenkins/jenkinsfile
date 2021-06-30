@@ -12,11 +12,11 @@ pipeline {
             stage ("Sonar"){
               steps{
                 withCredentials([sting(credentialsId: 'sonarLogin',variable: 'login'),string(credentialsId: 'sonarPassword', variable:'password')]){
-                sh('mvn sonar:sonar \
+                sh 'mvn sonar:sonar \
                 -D sonar.projectKey=Home \
                 -D sonar.host.url=http://192.168.1.49:9000 \
                 -D sonar.login=${login} \
-                -D sonar.password=${password}')
+                -D sonar.password=${password}'
                 }
               }
             }
