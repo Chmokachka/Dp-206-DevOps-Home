@@ -12,6 +12,7 @@ pipeline {
             stage ("Sonar"){
               steps{
                 script{
+                  sh ' mvn clean install'
                   withSonarQubeEnv('sonarserver'){
                     sh 'mvn sonar:sonar'
                   }
