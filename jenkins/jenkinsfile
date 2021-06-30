@@ -11,12 +11,17 @@ pipeline {
           stages{
             stage ("Sonar"){
               steps{
-                withCredentials([sting(credentialsId: 'sonarLogin',variable: 'login'),string(credentialsId: 'sonarPassword', variable:'password')]){
-                sh('mvn sonar:sonar \
-                -D sonar.projectKey=home \
-                -D sonar.host.url=http://192.168.1.49:9000 \
-                -D sonar.login=${login} \
-                -D sonar.password=${password}')
+                script{
+                  withSonarQubeEnv('sonarserver'){
+                    sh 'mvn sonar:sonar'
+                  }
+                  timeout(time: 1, unit: 'HOURS'){
+                    def qg = waitForQualityGate()
+                    if (qg.status != 'OK'){
+                      error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                    }
+                  }
+                  sh 'mvn clean install'
                 }
               }
             }
