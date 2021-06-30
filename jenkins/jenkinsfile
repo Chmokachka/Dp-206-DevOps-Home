@@ -12,12 +12,8 @@ pipeline {
             stage ("Sonar"){
               steps{
                 script{
-                  withCredentials([string(credentialsId: 'sonarLogin', variable: 'SONAR_LOGIN'), string(credentialsId: 'sonarPassword', variable: 'SONAR_PASSWORD')]){
-                    sh ('mvn sonar:sonar \
-                    -D sonar.projectKey=Home \
-                    -D sonar.host.url=http://localhost:9000 \
-                    -D sonar.login=${SONAR_LOGIN} \
-                    -D sonar.password=${SONAR_PASSWORD}')
+                  withSonarQubeEnv('sonarserver'){
+                    sh 'mvn sonar:sonar'
                   }
                   timeout(time: 1, unit: 'HOURS'){
                     def qg = waitForQualityGate()
