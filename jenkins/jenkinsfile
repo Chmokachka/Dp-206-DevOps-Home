@@ -12,8 +12,7 @@ pipeline {
             stage ("Sonar"){
               steps{
                 script{
-                  sh "java --version"
-                  sh "mvn clean install"
+                  sh 'mvn clean install'
                   withSonarQubeEnv('sonarserver'){
                     sh 'mvn sonar:sonar'
                   }
@@ -23,7 +22,6 @@ pipeline {
                       error "Pipeline aborted due to quality gate failure: ${qg.status}"
                     }
                   }
-                  sh 'mvn clean install'
                 }
               }
             }
