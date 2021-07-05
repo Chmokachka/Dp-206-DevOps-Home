@@ -2,10 +2,13 @@ pipeline {
     agent {
         label 'master'
     }
+    tools{
+      maven 'Maven'
+    }
     stages {
-        stage('TEST') {
+        stage('Build') {
             steps {
-                println "SUCCESS"
+              sh 'mvn clean install'
             }
         }
     }
