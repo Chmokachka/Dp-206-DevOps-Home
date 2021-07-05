@@ -14,7 +14,7 @@ pipeline {
         // Where your Nexus is running
         NEXUS_URL = "127.0.0.1:8081"
         // Repository where we will upload the artifact
-        NEXUS_REPOSITORY = "home_project"
+        NEXUS_REPOSITORY = "home_project_raw"
         // Jenkins credential id to authenticate to Nexus OSS
         NEXUS_CREDENTIAL_ID = "nexus"
     }
@@ -37,7 +37,7 @@ pipeline {
 
         stage ('Building the project') {
             steps {
-               sh 'sudo mvn clean package -DskipTests=true'
+               sh 'sudo mvn clean install'
             }
         }
         stage ('Creating the database') {
@@ -63,7 +63,7 @@ pipeline {
                     script {
                     pom = readMavenPom file: "pom.xml";
                     //filesByGlob = findFiles(glob: "*target/.${pom.packaging}");
-                    filesByGlob = findFiles(glob: "pom.xml");
+                    filesByGlob = findFiles(glob: "target/*.xml");
                     echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
                     artifactPath = filesByGlob[0].path;
                     artifactExists = fileExists artifactPath;
