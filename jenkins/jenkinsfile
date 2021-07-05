@@ -12,13 +12,7 @@ pipeline {
             stage ("Sonar"){
               steps{
                 script{
-                  sh ("""
-                  mvn sonar:sonar \
-  -Dsonar.projectKey=home \
-  -Dsonar.host.url=http://localhost:9000 \
-  -Dsonar.login=admin \
-  -Dsonar.password=19732002
-                  """)
+                  sh "mvn clean install"
                 }
               }
             }
