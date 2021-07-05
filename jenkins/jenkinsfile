@@ -12,15 +12,13 @@ pipeline {
             stage ("Sonar"){
               steps{
                 script{
-                  withSonarQubeEnv('sonarserver'){
-                    sh 'mvn sonar:sonar'
-                  }
-                  timeout(time: 1, unit: 'HOURS'){
-                    def qg = waitForQualityGate()
-                    if (qg.status != 'OK'){
-                      error "Pipeline aborted due to quality gate failure: ${qg.status}"
-                    }
-                  }
+                  sh ("""
+                  mvn sonar:sonar \
+  -Dsonar.projectKey=home \
+  -Dsonar.host.url=http://localhost:9000 \
+  -Dsonar.login=admin \
+  -Dsonar.password=19732002
+                  """)
                 }
               }
             }
