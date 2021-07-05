@@ -1,14 +1,11 @@
 pipeline {
-    agent {
-        label 'master'
-    }
-    tools{
-      maven 'Maven'
-    }
+    agent any
     stages {
         stage('Build') {
             steps {
-              sh 'mvn -v'
+              withMaven{
+                sh "mvn clean install"
+              }
             }
         }
     }
