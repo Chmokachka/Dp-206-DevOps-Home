@@ -6,6 +6,7 @@ pipeline {
                 script{
                   sh 'pwd'
                   sh "ls -la"
+                  sh "java -v"
                 }
               withMaven(maven: 'Maven'){
                 sh "mvn clean install"
