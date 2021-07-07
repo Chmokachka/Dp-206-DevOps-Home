@@ -8,7 +8,7 @@ pipeline {
                   sh "ls -la"
                 }
               withMaven(maven: 'Maven'){
-                sh "mvn clean install"
+                sh "sudo mvn clean install"
               }
             }
         }
