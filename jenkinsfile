@@ -3,6 +3,10 @@ pipeline {
     stages {
         stage('Build') {
             steps {
+                script{
+                  sh 'pwd'
+                  sh "ls -la"
+                }
               withMaven(maven: 'Maven'){
                 sh "mvn clean install -e -X"
               }
