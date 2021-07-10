@@ -2,23 +2,15 @@ pipeline {
     agent any
     stages {
         stage ("Sonar"){
-          agent {
-            docker{
-              image 'maven:latest'
-              args '-v $HOME/.m2:/root/.m2'
-            }
-          }
-          stages{
-            stage ("Sonar"){
               steps{
                 script{
-                  sh 'sudo mvn clean install'
+                  withMaven(mvn:'Maven'){
+                    sh "mvn clean install"
                 }
               }
             }
           }
         }
-    }
     post {
        always {
           withCredentials([string(credentialsId: 'telegramToken', variable: 'TOKEN'), string(credentialsId: 'telegramChatId', variable: 'CHAT_ID')]) {
@@ -28,4 +20,4 @@ pipeline {
           }
        }
     }
-}
+  }
