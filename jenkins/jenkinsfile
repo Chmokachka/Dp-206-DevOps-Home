@@ -6,6 +6,11 @@ pipeline {
                 script{
                   withMaven(mvn:'Maven'){
                     sh "mvn clean install"
+                    sh """ mvn sonar:sonar \
+   -Dsonar.projectKey=home \
+   -Dsonar.host.url=http://localhost:9000 \
+   -Dsonar.login=admin \
+   -Dsonar.password=19732002 """
                 }
               }
             }
