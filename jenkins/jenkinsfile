@@ -4,7 +4,7 @@ pipeline {
         stage ("Sonar"){
               steps{
                 script{
-                  withMaven(mvn:'Maven'){
+                  withMaven(maven:'Maven'){
                     sh "mvn clean install"
                     sh """ mvn sonar:sonar \
    -Dsonar.projectKey=home \
