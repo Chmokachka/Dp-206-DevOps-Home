@@ -1,21 +1,29 @@
 pipeline {
     agent any
     stages {
-        stage ("Sonar"){
+        stage ("Build"){
               steps{
                 script{
                   withMaven(maven:'Maven'){
                     sh "mvn clean install"
-                    sh """ mvn sonar:sonar \
-   -Dsonar.projectKey=home \
-   -Dsonar.host.url=http://localhost:9000 \
-   -Dsonar.login=admin \
-   -Dsonar.password=19732002 """
                 }
+              }
+            }
+        }
+        stage ("Sonar"){
+          steps{
+            script{
+              withMaven(maven:'Maven'){
+                sh """ mvn sonar:sonar \
+                -Dsonar.projectKey=home \
+                -Dsonar.host.url=http://localhost:9000 \
+                -Dsonar.login=admin \
+                -Dsonar.password=19732002 """
               }
             }
           }
         }
+    }
     post {
        always {
           withCredentials([string(credentialsId: 'telegramToken', variable: 'TOKEN'), string(credentialsId: 'telegramChatId', variable: 'CHAT_ID')]) {
@@ -25,4 +33,4 @@ pipeline {
           }
        }
     }
-  }
+}
