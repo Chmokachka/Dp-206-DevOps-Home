@@ -1,7 +1,7 @@
 pipeline {
     agent any
     stages {
-        stage ("Build"){
+  /*   stage ("Build"){
               steps{
                 script{
                   withMaven(maven:'Maven'){
@@ -9,7 +9,7 @@ pipeline {
                 }
               }
             }
-        }
+        } */
         stage ("Sonar"){
           steps{
             script{
