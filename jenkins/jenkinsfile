@@ -16,7 +16,7 @@ pipeline {
               withMaven(maven:'Maven'){
                 sh """ mvn sonar:sonar \
                 -Dsonar.projectKey=home \
-                -Dsonar.host.url=http://localhost:9000 \
+                -Dsonar.host.url=http://192.168.1.49:9000 \
                 -Dsonar.login=admin \
                 -Dsonar.password=19732002 """
               }
