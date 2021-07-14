@@ -4,7 +4,7 @@ pipeline {
     }
     tools { 
         maven 'Maven' 
-        jdk 'Java 8' 
+        jdk 'Java 11' 
     }
     environment {
         // This can be nexus3 or nexus2
@@ -17,8 +17,6 @@ pipeline {
         NEXUS_REPOSITORY = "home_project_raw"
         // Jenkins credential id to authenticate to Nexus OSS
         NEXUS_CREDENTIAL_ID = "nexus"
-        SONARQUBE_URL = "http://127.0.0.1:9000"
-        SONARQUBE_REPOSITORY = "home_project"
     }
     stages {
         stage('Retrieving prj. data') {
@@ -39,7 +37,7 @@ pipeline {
 
         stage ('Building the project') {
             steps {
-               sh 'sudo mvn clean install'
+               sh 'sudo mvn clean install -DskipTests=true'
             }
         }
         stage ('Creating the database') {
@@ -64,7 +62,6 @@ pipeline {
                 steps {
                     script {
                     pom = readMavenPom file: "pom.xml";
-                    //filesByGlob = findFiles(glob: "*target/.${pom.packaging}");
                     filesByGlob = findFiles(glob: "target/*.xml");
                     echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
                     artifactPath = filesByGlob[0].path;
@@ -96,22 +93,19 @@ pipeline {
                 }
                 }
             }
-            //stage ('Running Sonarqube tests') {
-            //steps {
-               //sh ''' mvn sonar:sonar \
-                //-Dsonar.projectKey= SONARQUBE_REPOSITORY \
-                //-Dsonar.host.url= SONARQUBE_URL \
-                //-Dsonar.login= SONARQUBE_LOGIN
-                //'''
-                
-                    //}
-            //}
             stage('SonarQube analysis') {
             steps {
+                script{
                 withSonarQubeEnv('SonarServer') { // You can override the credential to be used
-                    sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar'
+                    sh """sudo mvn sonar:sonar \
+                    -Dsonar.projectKey=home_project \ // Your prj. name here
+                    -Dsonar.host.url=http://127.0.0.1:9000 \ // Your SQ URL here
+                    -Dsonar.login=  \ // Your SQ username here
+                    -Dsonar.password=  // Your SQ user password here
+                    """
                                 }
                   }
+                }
             }
         }
     }
