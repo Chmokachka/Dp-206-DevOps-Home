@@ -22,7 +22,7 @@ pipeline {
         stage('Retrieving prj. data') {
       steps{
             script {
-                git([url: 'https://github.com/ita-social-projects/Home', branch: 'dev'])
+                git([url: 'https://github.com/1tacticalretard/206_Home', branch: 'main'])
             }
         }
         }  
@@ -97,9 +97,10 @@ pipeline {
             steps {
                 script{
                withSonarQubeEnv('SonarServer') { // You can override the credential to be used
-                    sh '''sudo mvn sonar:sonar \
+                     sh '''sudo mvn sonar:sonar \
                      -Dsonar.projectKey=home3 \
                      -Dsonar.host.url=http://127.0.0.1:9000 \
+                     -Dsonar.login=7358d49467050fd2b0a37dfb8bf95581799b0af2 '''
                                 }
                   }
                 }
