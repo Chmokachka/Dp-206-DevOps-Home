@@ -4,7 +4,7 @@ pipeline {
     }
     tools { 
         maven 'Maven' 
-        jdk 'Java 8' 
+        jdk 'Java 11' 
     }
     environment {
         // This can be nexus3 or nexus2
@@ -22,7 +22,7 @@ pipeline {
         stage('Retrieving prj. data') {
       steps{
             script {
-                git([url: 'https://github.com/1tacticalretard/206_Home', branch: 'main'])
+                git([url: 'https://github.com/ita-social-projects/Home', branch: 'dev'])
             }
         }
         }  
@@ -96,14 +96,22 @@ pipeline {
             stage('SonarQube analysis') {
             steps {
                 script{
-                withSonarQubeEnv('SonarServer_home3') { // You can override the credential to be used
+               withSonarQubeEnv('SonarServer') { // You can override the credential to be used
                     sh '''sudo mvn sonar:sonar \
                      -Dsonar.projectKey=home3 \
                      -Dsonar.host.url=http://127.0.0.1:9000 \
-                     -Dsonar.login=7358d49467050fd2b0a37dfb8bf95581799b0af2 '''
                                 }
                   }
                 }
             }
-        }
-    }
+        }  
+    post {
+        always {
+          withCredentials([string(credentialsId: 'telegramToken', variable: 'TOKEN'), string(credentialsId: 'telegramChatId', variable: 'CHAT_ID')]) {
+          sh  ("""
+              curl -s -X POST https://api.telegram.org/bot${TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d parse_mode=markdown -d text='*${env.JOB_NAME}* : POC *Branch*: ${env.GIT_BRANCH} *Build* : ${currentBuild.currentResult}'
+          """)
+          }
+       }
+    }     
+}
